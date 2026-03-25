@@ -54,10 +54,10 @@ def crawl():
             # if absolute_url not in visited:
             queue.append(absolute_url)
 
-        time.sleep(random.uniform(1,2))
+        # time.sleep(random.uniform(1,2))
 
 crawl()
-with open("pages.json","w",encoding="utf-8") as f:
+with open("data/pages.json","w",encoding="utf-8") as f:
     json.dump(pages,f,ensure_ascii=False,indent=2)
 
 print("Crawling complete. Data saved to pages.json")

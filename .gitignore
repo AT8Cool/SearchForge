@@ -1,5 +1,31 @@
-__pycache__/
-venv/
+
 pages.json
 crawler/tempCodeRunnerFile.py
+# -----------------
+# Python
+# -----------------
+__pycache__/
+*.pyc
+venv/
+
+# -----------------
+# React (nested)
+# -----------------
+app/templates/Vichar Search Engine Homepage/node_modules/
+
+# -----------------
+# Data
+# -----------------
 data/
+
+# -----------------
+# Temp files
+# -----------------
+crawler/tempCodeRunnerFile.py
+
+# -----------------
+# Editor / OS
+# -----------------
+.vscode/
+.DS_Store
+Thumbs.db

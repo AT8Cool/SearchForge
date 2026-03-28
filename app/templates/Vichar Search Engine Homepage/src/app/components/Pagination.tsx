@@ -10,7 +10,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   
   return (
-    <div className="flex items-center justify-center gap-2 py-8">
+    <div className="flex flex-wrap items-center justify-center gap-2 py-6 sm:py-8">
       {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
@@ -25,7 +25,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         `}
       >
         <ChevronLeft className="size-4" />
-        Previous
+        <span className="hidden sm:inline">Previous</span>
       </button>
 
       {/* Page Numbers */}
@@ -36,10 +36,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
             onClick={() => onPageChange(page)}
             className={`
               px-3 py-2 rounded-lg text-[14px] min-w-[40px]
-              transition-all
+              transition-all duration-200
               ${currentPage === page
-                ? 'bg-blue-600 dark:bg-blue-500 text-white'
-                : 'text-foreground hover:bg-secondary'
+                ? 'bg-blue-600 dark:bg-blue-500 text-white scale-105'
+                : 'text-foreground hover:bg-secondary hover:scale-105'
               }
             `}
           >
@@ -61,7 +61,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           }
         `}
       >
-        Next
+        <span className="hidden sm:inline">Next</span>
         <ChevronRight className="size-4" />
       </button>
     </div>

@@ -5,17 +5,36 @@ import random
 import time
 import json
 
-seed_url = "https://en.wikipedia.org/wiki/The_Girl_I_Like_Forgot_Her_Glasses"
-
-
-
-queue = [seed_url]
+seed_url = "https://en.wikipedia.org/wiki/Computer_science"
+queue = [seed_url] 
 visited = set()
-max_page = 100
+max_page = 300
+allowed_domains = [
+    "wikipedia.org",
+    "geeksforgeeks.org",
+    "stackoverflow.com"
+]
+
+def is_allowed(url):
+    domain = urlparse(url).netloc
+    return any(d in domain for d in allowed_domains)
+
 
 headers = {"User-Agent": "Mozilla/5.0 (compatible; MyCrawler/1.0)"}
 # response = requests.get(seed_url, headers=headers)
 # print(response)    
+
+# --- PARSERS ---
+def parse_page(url, soup):
+    domain = urlparse(url).netloc
+
+    title = soup.title.string if soup.title else ""
+    # Wikipedia
+    if "wikipedia.org" in domain:
+        paragraphs = soup.find_all("p")
+        text = " ".join(p.get_text() for p in paragraphs)
+
+    return title, text
 
 pages = []
 
@@ -28,6 +47,9 @@ def crawl():
         if url in visited:
             continue
 
+        if not is_allowed(url):
+            continue
+
         try:
             response = requests.get(url, timeout=5, headers=headers)
             print(f"Visiting: {url} | Status Code: {response.status_code}")
@@ -38,9 +60,12 @@ def crawl():
         visited.add(url)  
 
         soup = BeautifulSoup(response.text, "html.parser")
-        title = soup.title.string if soup.title else ""
-        text = soup.get_text()
-
+         
+        # title = soup.title.string if soup.title else ""
+        # paragraphs = soup.find_all("p")
+        # text = " ".join(p.get_text() for p in paragraphs)
+        
+        title, text = parse_page(url,soup)
         pages.append({
             "url":url,
             "title":title,
@@ -50,11 +75,13 @@ def crawl():
         
         for link in soup.find_all("a", href=True):  
             absolute_url = urljoin(url, link["href"])
-            # if urlparse(absolute_url).netloc == urlparse(seed_url).netloc:
-            # if absolute_url not in visited:
-            queue.append(absolute_url)
+            
+            if urlparse(absolute_url).netloc == urlparse(seed_url).netloc:
+                
+                    if absolute_url not in visited and absolute_url not in queue:
+                                queue.append(absolute_url)
 
-        # time.sleep(random.uniform(1,2))
+        time.sleep(random.uniform(1,2))
 
 crawl()
 with open("data/pages.json","w",encoding="utf-8") as f:

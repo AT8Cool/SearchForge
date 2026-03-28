@@ -21,7 +21,7 @@ data/
 # -----------------
 # Temp files
 # -----------------
-crawler/tempCodeRunnerFile.py
+crawler/
 
 # -----------------
 # Editor / OS

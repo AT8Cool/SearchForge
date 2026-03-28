@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState,useEffect, useRef } from 'react';
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -16,11 +16,30 @@ export function SearchBar({ onSearch }: SearchBarProps) {
     }
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+ useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+
+    // ignore if user is already typing in input
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+
+    if (e.key === '/') {
+      e.preventDefault();
+      inputRef.current?.focus();
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, []);
+
   return (
     <form onSubmit={handleSubmit}>
       <div 
         className={`
-          relative h-[56px] 
+          relative h-[56px] w-full
           bg-background border border-border/40
           rounded-[28px] 
           transition-all duration-300 ease-out
@@ -29,11 +48,12 @@ export function SearchBar({ onSearch }: SearchBarProps) {
             : 'shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)]'
           }
         `}
-        style={{ width: isFocused ? '800px' : '680px' }}
+        
       >
         <div className="flex items-center h-full px-6 gap-4">
           <Search className="size-5 text-muted-foreground flex-shrink-0" />
-          <input
+          <input autoFocus
+            ref ={inputRef}
             type="text"
             placeholder="Search anything…"
             value={query}

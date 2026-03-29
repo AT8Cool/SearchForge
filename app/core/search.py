@@ -17,6 +17,18 @@ avgdl = cur.fetchone()[0] or 1
 k = 1.5
 b = 0.75
 
+SOURCE_WEIGHTS = {
+    "wikipedia": 1.0,
+    "gfg": 0.9,
+    "stackoverflow": 0.85,
+    "mdn": 0.8,
+    "medium": 0.6,
+    "other": 0.5
+}
+
+
+
+
 
 # --- URL cleanup ---
 def canonicalize_url(url):
@@ -61,6 +73,14 @@ def generate_snippet(content, query_words, length=200):
 def search(query):
     if not query.strip():
         return []
+    
+    query_lower = query.lower()
+    if "what is" in query_lower:
+        preferred = ["wikipedia"]
+    elif "how" in query_lower:
+        preferred = ["gfg", "stackoverflow"]
+    else:
+        preferred = []
 
     raw_words = word_tokenize(query.lower())
     raw_words = [w for w in raw_words if w.isalnum()]
@@ -132,7 +152,7 @@ def search(query):
 
     # --- batch fetch page data ---
     cur.execute(
-        f"SELECT id, title, url, content FROM pages WHERE id IN ({placeholders_pages})",
+        f"SELECT id, title, url, content, source FROM pages WHERE id IN ({placeholders_pages})",
         page_ids
     )
     page_data = {row[0]: row[1:] for row in cur.fetchall()}
@@ -146,7 +166,7 @@ def search(query):
         if page_id not in page_data:
             continue
 
-        title, url, content = page_data[page_id]
+        title, url, content,source = page_data[page_id]
 
         # (keep your original logic exactly)
         if any(x in url for x in ["Talk:", "File:", "Help:", "Category:"]):
@@ -166,21 +186,52 @@ def search(query):
         title_words = set(title_clean.split())
         content_words = set(content_clean.split())
 
+        query_clean = re.sub(r'[^a-z0-9\s]', ' ', query.lower())
+        query_clean = re.sub(r'\s+', ' ', query_clean).strip()
+
+####################################################################
         final_score = base_score
+################################################################## 
+    
+    # --- NEW: source weighting ---
+        source_weight = SOURCE_WEIGHTS.get(source, 0.5)
+        final_score *= (0.7 + 0.3 * source_weight)
+        if "what is" in query_lower and source == "wikipedia":
+            final_score *= 1.5
+        
+        if "what is" in query_lower and source in ["gfg", "stackoverflow"]:
+            final_score *= 0.8
+
+        # --- NEW: weak title penalty ---
+        if not any(w in title_words for w in query_words):
+            final_score *= 0.95
+
+        if source in preferred:
+            final_score *= 1.3
+        
+        if source == "other":
+            final_score *= 0.7
 
         match_count = sum(1 for w in query_words if w in title_words)
         if match_count > 0:
             final_score *= (1 + 0.2 * match_count)
 
-        if full_query in title_clean:
-            final_score *= 1.8
-        elif full_query in content_clean:
-            final_score *= 1.3
-
+        if query_clean in title_clean:
+            final_score *= 1.5
+        elif query_clean in content_clean:
+            final_score *= 1.2
+       
         if all(w in content_words for w in query_words):
             final_score *= 1.2
 
+        if any(w in clean_url for w in query_words):
+            final_score *= 1.1
+        
         snippet = generate_snippet(content, query_words)
+
+        # --- NEW: filter weak garbage results ---
+        if final_score < 0.3:
+            continue
 
         results.append({
             "score": final_score,

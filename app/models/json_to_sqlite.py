@@ -17,9 +17,14 @@ with open("data/idf.json","r",encoding="utf-8") as f:
 for i, page in enumerate(pages):
     content = page.get("text", "")
     cur.execute("""
-        INSERT OR IGNORE INTO pages (id, url, title, content, length)
-        VALUES (?, ?, ?, ?, ?)
-    """, (i, page["url"], page["title"], content, len(content.split())))
+        INSERT OR IGNORE INTO pages (id, url, title, content, length, source)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (i, 
+          page["url"], 
+          page["title"], 
+          content, 
+          len(content.split()), 
+          page.get("source","other"))) 
 
 # insert inverted index
 for word, postings in index.items():

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: vichar-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.deploy.txt
+    startCommand: python scripts/ensure_search_db.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: SEARCH_DB_PATH
+        value: data/search.db
+      - key: SEARCH_DB_URL
+        sync: false

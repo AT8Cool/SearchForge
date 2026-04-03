@@ -1,6 +1,6 @@
 import { Search, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 interface SearchHeaderProps {
   initialQuery?: string;
@@ -49,7 +49,13 @@ export function SearchHeader({ initialQuery = '', isDarkMode = false, onToggleTh
               `}
             >
               <div className="flex items-center h-full px-4 gap-3 sm:px-5 gap-2 sm:gap-3">
-                <Search className="size-4 text-muted-foreground shrink-0" />
+                <button
+                  type="submit"
+                  aria-label="Search"
+                  className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Search className="size-4" />
+                </button>
                 <input
                   type="text"
                   value={query}
@@ -66,12 +72,12 @@ export function SearchHeader({ initialQuery = '', isDarkMode = false, onToggleTh
 
           {/* Navigation */}
           <nav className="flex items-center gap-4 sm:gap-6 ml-auto shrink-0">
-            <a 
-              href="#about" 
+            <Link 
+              to="/about"
               className="hidden sm:inline text-[14px] text-foreground/70 hover:text-foreground transition-colors"
             >
               About
-            </a>
+            </Link>
             
             {/* Theme Toggle */}
             {onToggleTheme && (

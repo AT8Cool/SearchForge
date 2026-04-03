@@ -1,22 +1,41 @@
-
-pages.json
-crawler/tempCodeRunnerFile.py
 # -----------------
 # Python
 # -----------------
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
 venv/
 
 # -----------------
-# React (nested)
+# Frontend
 # -----------------
 app/templates/Vichar Search Engine Homepage/node_modules/
+app/templates/Vichar Search Engine Homepage/dist/
+app/templates/Vichar Search Engine Homepage/.vercel/
 
 # -----------------
-# Data
+# Environment / Logs
+# -----------------
+.env
+.env.*
+*.log
+
+# -----------------
+# Data / Local DBs
 # -----------------
 data/
+pages.json
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite3
 
 # -----------------
 # Temp files
@@ -27,5 +46,6 @@ crawler/tempCodeRunnerFile.py
 # Editor / OS
 # -----------------
 .vscode/
+.idea/
 .DS_Store
 Thumbs.db

@@ -86,7 +86,7 @@ def parse_page(soup):
 def fetch_page(url):
     try:
         # small delay per request (important)
-        time.sleep(random.uniform(0.05, 0.1))
+        # time.sleep(random.uniform(0.05, 0.1))
 
         response = requests.get(url, timeout=8, headers=headers)
         print(f"[{response.status_code}] {url}")

@@ -1,10 +1,19 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Header } from '../components/Header';
 import { SearchBar } from '../components/SearchBar';
 import { Moon, Sun } from 'lucide-react';
 import { QuickSuggestion } from '../components/QuickSuggestion';
 import { useTheme } from '../context/ThemeContext';
+
+const DEMO_SUGGESTIONS = [
+  'Computer Science',
+  'What is Database',
+  'Python',
+  'NASA Moon Mission',
+  'Web Development',
+  'Cancer',
+  'Heart Health',
+];
 
 export function Home() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -44,7 +53,7 @@ export function Home() {
           <Header />
 
           {/* Hero Section - Centered */}
-          <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 -mt-16 sm:-mt-20">
+          <main className="relative z-0 flex-1 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 -mt-16 sm:-mt-20">
             {/* Logo */}
             <h1 className="text-[48px] sm:text-[60px] md:text-[72px] tracking-[0.08em] text-foreground select-none">
               Vichar
@@ -58,6 +67,21 @@ export function Home() {
             {/* Search Bar */}
             <div className="mt-8 sm:mt-10 md:mt-12 w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[680px]">
               <SearchBar onSearch={handleSearch} />
+            </div>
+
+            <div className="mt-6 flex w-full max-w-[90vw] sm:max-w-[600px] md:max-w-[760px] flex-col items-center gap-3">
+              <p className="text-center text-[13px] uppercase tracking-[0.24em] text-muted-foreground/80">
+                Try these searches
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2.5">
+                {DEMO_SUGGESTIONS.map((suggestion) => (
+                  <QuickSuggestion
+                    key={suggestion}
+                    label={suggestion}
+                    onClick={() => handleSearch(suggestion)}
+                  />
+                ))}
+              </div>
             </div>
           </main>
         </div>

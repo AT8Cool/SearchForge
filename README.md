@@ -52,13 +52,23 @@ The current demo is built around a curated, cleaned dataset and performs well on
 The current demo includes these views:
 
 - Home page with guided starter suggestions
-- Search results for database-oriented queries
-- Search results for NASA and Artemis mission coverage
-- Search results for theory of computation
-- About page with project and profile links
+  
+   <img width="1904" height="904" alt="image" src="https://github.com/user-attachments/assets/364b9bb3-5342-44dd-8e86-71e1d5e8e9aa" />
 
-Note:
-The screenshots shared during development are not embedded here yet because they are not stored as image files inside the repository. Once they are added to the repo as local assets, they can be linked here directly.
+
+- Search results for queries
+  
+   <img width="1861" height="835" alt="image" src="https://github.com/user-attachments/assets/7da22c29-a25f-4b51-8049-615e41e12732" />
+
+   <img width="1877" height="876" alt="image" src="https://github.com/user-attachments/assets/74dacbbd-4357-4f24-b8fd-f157362ee168" />
+
+   <img width="1856" height="895" alt="image" src="https://github.com/user-attachments/assets/9df198f7-ba0e-423f-b397-27f19d1c3222" />
+
+
+- About page with project and profile links
+  
+  <img width="1901" height="892" alt="image" src="https://github.com/user-attachments/assets/58c6e098-b324-45a0-9fb1-7e51c09e9f39" />
+
 
 ## Tech Stack
 

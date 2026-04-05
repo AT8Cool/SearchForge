@@ -70,86 +70,6 @@ The screenshots shared during development are not embedded here yet because they
 - React
 - Vite
 
-## Hosting
-
-The cleanest public setup for this project is:
-
-- Frontend on Vercel
-- Backend on Render
-
-### Why split it this way
-
-- Vercel handles the React frontend well and works nicely with a subdirectory project
-- Render is a simple fit for the FastAPI backend
-- The frontend now reads its backend URL from `VITE_API_BASE_URL` instead of hardcoding localhost
-- The backend now supports `SEARCH_DB_PATH`, a `/api/search` route, and a `/api/health` route for deployment
-
-### Backend on Render
-
-The repo now includes:
-
-- `render.yaml`
-- `requirements.deploy.txt`
-- `scripts/ensure_search_db.py`
-
-Render will build the API with:
-
-```text
-pip install -r requirements.deploy.txt
-```
-
-and start it with:
-
-```text
-python scripts/ensure_search_db.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
-
-You have two practical ways to supply the SQLite database:
-
-1. Fastest path:
-   Force-add `data/search.db` to git for the demo deploy.
-2. Cleaner path:
-   Upload `search.db` somewhere public, then set `SEARCH_DB_URL` in Render so the backend downloads it on boot.
-
-The current `search.db` is roughly 86 MB, so the fast path is workable for a demo repo but still heavier than ideal.
-
-Recommended environment variables:
-
-```text
-SEARCH_DB_PATH=data/search.db
-SEARCH_DB_URL=<public-url-to-search.db>
-```
-
-### Frontend on Vercel
-
-The frontend folder is:
-
-```text
-app/templates/Vichar Search Engine Homepage
-```
-
-Set that folder as the Vercel project root.
-
-The repo now includes:
-
-- `.env.example`
-- `vercel.json`
-
-Set this environment variable in Vercel:
-
-```text
-VITE_API_BASE_URL=https://your-render-backend.onrender.com
-```
-
-`vercel.json` rewrites all routes to `index.html`, which keeps the React Router paths working for `/`, `/search`, and `/about`.
-
-### Deployment Notes
-
-- Render Free services spin down after inactivity, so the first request can be slow
-- Render Free services use an ephemeral filesystem, so a database downloaded from `SEARCH_DB_URL` must be downloaded again after a cold restart
-- If you want a smoother public demo, a paid Render instance with persistent storage is the more stable option
-- The frontend and backend can still be run locally without any deployment-only changes
-
 ## Project Flow
 
 1. `crawler/crawler2.py` crawls allowed domains and writes `data/pages.jsonl`
@@ -158,28 +78,6 @@ VITE_API_BASE_URL=https://your-render-backend.onrender.com
 4. `app/core/pagerank.py` computes PageRank scores from the stored link graph
 5. `app/main.py` serves search results through FastAPI
 
-## Main Files
-
-```text
-Search-engine/
-|-- crawler/
-|   |-- crawler.py
-|   |-- crawler1.py
-|   `-- crawler2.py
-|-- indexer/
-|   `-- build_index.py
-|-- app/
-|   |-- main.py
-|   |-- core/
-|   |   |-- search.py
-|   |   `-- pagerank.py
-|   `-- models/
-|       |-- create_db.py
-|       `-- json_to_sqlite.py
-|-- data/
-|-- pipeline.py
-`-- README.md
-```
 
 ## Local Setup
 
@@ -231,37 +129,6 @@ Frontend URL:
 ```text
 http://127.0.0.1:5173
 ```
-
-## Search API
-
-Endpoint:
-
-```text
-GET /api/search?q=<query>&page=1&limit=10
-```
-
-Example:
-
-```text
-http://127.0.0.1:8000/api/search?q=computer%20science&page=1&limit=10
-```
-
-Response shape:
-
-```json
-{
-  "results": [
-    {
-      "title": "Computer science - Wikipedia",
-      "url": "https://en.wikipedia.org/wiki/Computer_science",
-      "score": 123.45,
-      "snippet": "Computer science is the study of computation..."
-    }
-  ],
-  "total": 1
-}
-```
-
 ## Notes
 
 - The current public demo uses a curated, frozen dataset for stability
